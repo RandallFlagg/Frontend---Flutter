@@ -1,7 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:english_words/english_words.dart';
 
 void main() {
   runApp(MyApp());
+}
+
+class RandomWords extends StatefulWidget {
+  @override
+  _RandomWordsState createState() => _RandomWordsState();
+}
+
+class _RandomWordsState extends State<RandomWords> {
+  @override
+  Widget build(BuildContext context) {
+    final wordPair = WordPair.random();
+    return Text(wordPair.asPascalCase);
+  }
+}
+
+class GeoLocation extends StatefulWidget {
+  @override
+  _GeoLocationState createState() => _GeoLocationState();
+}
+
+class _GeoLocationState extends State<GeoLocation> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Position>(
+        future: Geolocator()
+            .getCurrentPosition(desiredAccuracy: LocationAccuracy.high),
+        builder: (context, AsyncSnapshot<Position> snapshot) {
+          if (snapshot.hasData) {
+            return Text('Your location is: ' + snapshot.data.toString());
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -97,13 +133,15 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            GeoLocation(),
             Text(
-              'You have pushed the button this many times:',
+              'You have clicked the button this many times:',
             ),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            RandomWords()
           ],
         ),
       ),
