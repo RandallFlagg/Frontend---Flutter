@@ -1,43 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:english_words/english_words.dart';
+import 'GeoLocation.dart';
+import 'RandomWords.dart';
 
 void main() {
   runApp(MyApp());
-}
-
-class RandomWords extends StatefulWidget {
-  @override
-  _RandomWordsState createState() => _RandomWordsState();
-}
-
-class _RandomWordsState extends State<RandomWords> {
-  @override
-  Widget build(BuildContext context) {
-    final wordPair = WordPair.random();
-    return Text(wordPair.asPascalCase);
-  }
-}
-
-class GeoLocation extends StatefulWidget {
-  @override
-  _GeoLocationState createState() => _GeoLocationState();
-}
-
-class _GeoLocationState extends State<GeoLocation> {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Position>(
-        future: Geolocator()
-            .getCurrentPosition(desiredAccuracy: LocationAccuracy.high),
-        builder: (context, AsyncSnapshot<Position> snapshot) {
-          if (snapshot.hasData) {
-            return Text('Your location is: ' + snapshot.data.toString());
-          } else {
-            return CircularProgressIndicator();
-          }
-        });
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -141,7 +107,25 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
-            RandomWords()
+            RandomWords(),
+            Builder(
+              builder: (context) => Center(
+                  child: FlatButton(
+                color: Colors.blue,
+                textColor: Colors.white,
+                disabledColor: Colors.grey,
+                disabledTextColor: Colors.black,
+                padding: EdgeInsets.all(8.0),
+                splashColor: Colors.blueAccent,
+                onPressed: // () {
+                    /*...*/
+                    () => _showToast(context),
+                child: Text(
+                  "A Question API Test",
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              )),
+            ),
           ],
         ),
       ),
@@ -150,6 +134,17 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  void _showToast(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('This button is waiting for API calls'),
+        action: SnackBarAction(
+            label: 'OK', onPressed: scaffold.hideCurrentSnackBar),
+      ),
     );
   }
 }
